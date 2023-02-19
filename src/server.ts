@@ -5,4 +5,4 @@ app
   .listen({
     port: port,
   })
-  .then(() => `Server is listening in port ${port}`);
+  .then(() => console.log(`Server is listening in port ${port}`));
