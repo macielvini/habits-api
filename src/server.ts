@@ -1,7 +1,6 @@
 import app from "./app";
 
 const port = 5000;
-console.log("oi");
 app
   .listen({
     port: port,
