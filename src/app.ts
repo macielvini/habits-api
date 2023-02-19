@@ -1,11 +1,11 @@
 import Fastify from "fastify";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = Fastify();
 
 app.get("/health", () => {
-  return "Connected";
+  return "Health Check";
 });
 
-app.listen({
-  port: 5000,
-});
+export default app;
