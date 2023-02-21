@@ -8,7 +8,7 @@
     "dev": "tsx watch src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:seed": "npx prisma db seed",
-    "dev:migration": "npx prisma migration dev"
+    "dev:migration": "npx prisma migrate dev"
   },
   "keywords": [],
   "author": "",
