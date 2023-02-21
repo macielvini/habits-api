@@ -38,7 +38,7 @@ export async function appRoutes(app: FastifyInstance) {
 
     const { date } = getDayParams.parse(request.query);
 
-    const parsedDate = dayjs(date).add(3, "h");
+    let parsedDate = dayjs(date).startOf("day");
     const weekDay = dayjs(parsedDate).get("day");
 
     const possibleHabits = await prisma.habit.findMany({
@@ -60,5 +60,44 @@ export async function appRoutes(app: FastifyInstance) {
     const completedHabits = day?.dayHabit.map((d) => d.habitId);
 
     return { possibleHabits, completedHabits };
+  });
+
+  app.patch("/habits/:id/toggle", async (request) => {
+    const toggleHabitParams = z.object({
+      id: z.string().uuid(),
+    });
+
+    const { id } = toggleHabitParams.parse(request.params);
+
+    const today = dayjs().startOf("day").toDate();
+
+    let day = await prisma.day.findUnique({
+      where: { date: today },
+    });
+
+    if (!day) {
+      day = await prisma.day.create({
+        data: { date: today },
+      });
+    }
+
+    const habitIsAlreadyCompleted = await prisma.dayHabit.findUnique({
+      where: {
+        dayId_habitId: {
+          dayId: day.id,
+          habitId: id,
+        },
+      },
+    });
+
+    if (habitIsAlreadyCompleted) {
+      await prisma.dayHabit.delete({
+        where: { id: habitIsAlreadyCompleted.id },
+      });
+    } else {
+      await prisma.dayHabit.create({
+        data: { dayId: day.id, habitId: id },
+      });
+    }
   });
 }
